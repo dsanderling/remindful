@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Remindful</string>
     <string name="edit_message">Enter a new message</string>
-    <string name="button_send">Send</string>
+    <string name="button_send">Add</string>
     <string name="button_create_notification">Create Notification</string>
 </resources>

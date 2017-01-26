@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.Random;
-
+//http://stackoverflow.com/questions/17525886/listview-with-add-and-delete-buttons-in-each-row-in-android
 public class DisplayMessageActivity extends AppCompatActivity {
 
     @Override
