@@ -8,11 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import java.io.Console;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.dizzwave.remindful.R.id.messageList;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -27,23 +31,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void renderMessages(Set<String> messages){
-        for(String message : messages){
-            Log.d("dave",message);
-            //render cell
-        }
+        String[] arrayMessages = messages.toArray(new String[messages.size()]);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, arrayMessages);
+        //create new layout (trashable_list_item.xml) and reference that instead.
+        //use AndroidBootstrap (https://github.com/Bearded-Hen/Android-Bootstrap)
+        //  in the new layout -- make it pretty, with an X on the right to delete
+        //  (and maybe some other icon to notificationify it).
+        ListView messageList = (ListView) findViewById(R.id.messageList);
+        messageList.setAdapter(adapter);
     }
 
     /** Called when the user clicks the Send button */
     public void sendMessage(View view) {
-//        Intent intent = new Intent(this, DisplayMessageActivity.class);
         EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
-//        startActivity(intent);
-
         storeMessage(message);
         renderMessages(getMessages());
     }
+
+
+    //looks like if we want to preserve order, saving a JSONArray into
+    //one sharedPreference might be the easiest way. See accepted answer here:
+    //http://stackoverflow.com/questions/35567517/cant-control-order-of-string-set-in-shared-preferences
 
     private void storeMessage(String message){
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
