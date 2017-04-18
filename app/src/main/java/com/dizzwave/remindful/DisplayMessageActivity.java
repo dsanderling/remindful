@@ -21,7 +21,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_display_message);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra(com.dizzwave.remindful.MainActivity.EXTRA_MESSAGE);
+        String message = "hello weld"; //intent.getStringExtra(com.dizzwave.remindful.MainActivity.EXTRA_MESSAGE);
         TextView textView = new TextView(this);
         textView.setTextSize(40);
         textView.setText(message);
@@ -30,10 +30,10 @@ public class DisplayMessageActivity extends AppCompatActivity {
         layout.addView(textView);
     }
 
-    public void createNotification(View view){
+    public void createNotification(String message){
         //get the text
         Intent intent = getIntent();
-        String message = intent.getStringExtra(com.dizzwave.remindful.MainActivity.EXTRA_MESSAGE);
+        //String message =  "hello weld";
 
         storeMessage(message);
 
