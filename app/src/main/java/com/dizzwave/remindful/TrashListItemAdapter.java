@@ -1,5 +1,6 @@
 package com.dizzwave.remindful;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,10 @@ import java.util.ArrayList;
 
 public class TrashListItemAdapter extends ArrayAdapter<String> {
 
-    public TrashListItemAdapter(Context context, String[] messages) {
+    MainActivity mainActivity;
+    public TrashListItemAdapter(Context context, MainActivity main, String[] messages) {
             super(context, 0, messages);
+        mainActivity = main;
         }
 
     @Override
@@ -35,6 +38,7 @@ public class TrashListItemAdapter extends ArrayAdapter<String> {
                 ViewGroup row = (ViewGroup) v.getParent();
                 BootstrapButton view = (BootstrapButton) row.findViewById(R.id.message);
                 Log.d("bb",view.getText().toString());
+                mainActivity.createNotification(view.getText().toString());
             }
         };
         View.OnClickListener listener2 = new View.OnClickListener() {
@@ -43,11 +47,11 @@ public class TrashListItemAdapter extends ArrayAdapter<String> {
                 ViewGroup row = (ViewGroup) v.getParent();
                 BootstrapButton view = (BootstrapButton) row.findViewById(R.id.message);
                 Log.d("trash",view.getText().toString());
+                mainActivity.deleteMessage(view.getText().toString());
+                mainActivity.renderMessages();
             }
         };
-        // Lookup view for data population
         BootstrapButton bb = (BootstrapButton) convertView.findViewById(R.id.message);
-        // Populate the data into the template view using the data object
         bb.setText(message.toString());
         bb.setOnClickListener(listener);
 

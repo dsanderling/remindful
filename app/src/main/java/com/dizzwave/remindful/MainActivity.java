@@ -27,45 +27,25 @@ import static com.dizzwave.remindful.R.id.messageList;
 
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences preferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
+        preferences = getPreferences(Context.MODE_PRIVATE);
 
-        Set<String> messages = getMessages();
-        renderMessages(messages);
+        renderMessages();
     }
 
-    private void renderMessages(Set<String> messages){
+
+
+    public void renderMessages(){
+        Set<String> messages = getMessages();
         String[] arrayMessages = messages.toArray(new String[messages.size()]);
-        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-        //        R.layout.trashable_list_item, arrayMessages);
-        TrashListItemAdapter adapter = new TrashListItemAdapter(this, arrayMessages);
-
-        //create new layout (trashable_list_item.xml) and reference that instead.
-        //use AndroidBootstrap (https://github.com/Bearded-Hen/Android-Bootstrap)
-        //  in the new layout -- make it pretty, with an X on the right to delete
-        //  (and maybe some other icon to notificationify it).
+        TrashListItemAdapter adapter = new TrashListItemAdapter(this, this, arrayMessages);
         ListView messageList = (ListView) findViewById(R.id.messageList);
-        Log.d("mytag","hello you");
-
-        /*messageList.setOnItemClickListener(
-            new android.widget.AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> arg0, View view, int arg2,
-                                        long arg3) {
-                    Log.d("onclick","a click");
-                    if(view.getTag()=="notify"){
-                        createNotification("hi");
-                    }
-                    else if(view.getTag()=="trash"){
-                        createNotification("trash!!!");
-                    }
-                }
-            }
-        );
-        */
         messageList.setAdapter(adapter);
     }
 
@@ -85,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         // Sets an ID for the notification
         Random random = new Random();
         int mNotificationId = random.nextInt(9999 - 1000) + 1000;
-        //int mNotificationId = 001;
         // Gets an instance of the NotificationManager service
         NotificationManager mNotifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -93,18 +72,25 @@ public class MainActivity extends AppCompatActivity {
         mNotifyMgr.notify(mNotificationId, mBuilder.build());
     }
 
+    /** Called when the user clicks the Send button */
+    public void sendMessage(View view) {
+        EditText editText = (EditText) findViewById(R.id.edit_message);
+        String message = editText.getText().toString();
+        storeMessage(message);
+        renderMessages();
+    }
     private void storeMessage(String message){
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Set<String> messages = new HashSet<String>(sharedPref.getStringSet("com.dizzwave.remindful.messages", new HashSet<String>()));
+        Set<String> messages = new HashSet<String>(preferences.getStringSet("com.dizzwave.remindful.messages", new HashSet<String>()));
         messages.add(message);
-        editor.putStringSet("com.dizzwave.remindful.messages", messages);
-        editor.commit();
+        preferences.edit().putStringSet("com.dizzwave.remindful.messages", messages).commit();
+    }
+
+    public void deleteMessage(String key){
+        preferences.edit().remove(key).commit();
     }
 
     private Set<String> getMessages(){
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        Set<String> messages = sharedPref.getStringSet("com.dizzwave.remindful.messages", new HashSet<String>());
+        Set<String> messages = preferences.getStringSet("com.dizzwave.remindful.messages", new HashSet<String>());
         return messages;
     }
 }
